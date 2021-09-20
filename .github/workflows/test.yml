@@ -35,6 +35,4 @@ jobs:
           node-version: '14'
       - run: |
           npm ci
-          (cd lib/lambda/ami-sweeper && npm ci && npm run build)
           npm run build
-          find . | grep -v node_modules
