@@ -1,0 +1,20 @@
+---
+- name: Install Heartbeat Cron Job
+  hosts:
+    - localhost
+  vars:
+    # Required variables:
+    # - vars_file
+    # - playbook_path
+    # - runner_user
+    log_file: /tmp/heartbeat.log
+  tasks:
+
+    - name: Create crontab entry
+      cron:
+        user: "{{ runner_user }}"
+        cron_file: /etc/cron.d/heartbeat
+        name: heartbeat
+        job: sudo --login --user github-runner ansible-playbook --extra-vars "@{{ vars_file }}" "{{ playbook_path }}" > "{{ log_file }}" 2>&1
+        state: present
+        minute: "*"

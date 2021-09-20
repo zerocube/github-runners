@@ -1,0 +1,12 @@
+---
+- name: Marks the current instance as unhealthy
+  hosts:
+    - localhost
+  tasks:
+  
+    - name: Gather EC2 instance facts
+      amazon.aws.ec2_metadata_facts: {}
+
+    - name: Mark instance as unhealthy
+      shell: >-
+        aws autoscaling set-instance-health --instance-id {{ ansible_ec2_instance_id }} --health-status Unhealthy

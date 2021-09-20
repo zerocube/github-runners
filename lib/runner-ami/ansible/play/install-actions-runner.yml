@@ -1,0 +1,20 @@
+---
+- name: Install the Github Actions Runner
+  hosts:
+    - localhost
+  vars:
+    # Required vars:
+    # - runner_app_directory
+    actions_package_url: >-
+      https://github.com/actions/runner/releases/download/v2.281.1/actions-runner-linux-x64-2.281.1.tar.gz
+    tmp_dest: /tmp/actions.tar.gz
+  tasks:
+    - name: Download Actions Package
+      get_url:
+        dest: "{{ tmp_dest }}"
+        url: "{{ actions_package_url }}"
+        force: yes
+    - name: Extract Actions Package
+      command:
+        chdir: "{{ runner_app_directory }}"
+        cmd: 'tar xzf "{{ tmp_dest }}"'

@@ -1,0 +1,34 @@
+---
+- name: Configure Cloudwatch Agent
+  hosts:
+    - localhost
+  vars:
+    # The two below are required
+    # log_group_name:
+    config_file: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+    cloudwatch_config:
+      logs:
+        logs_collected:
+          files:
+            collect_list:
+              - file_path: /var/log/cloud-init.log
+                log_group_name: "{{ log_group_name }}"
+                log_stream_name: cloud-init
+              - file_path: /var/log/cloud-init-output.log
+                log_group_name: "{{ log_group_name }}"
+                log_stream_name: cloud-init-output
+  tasks:
+
+    - name: Write Cloudwatch Agent Config
+      copy:
+        dest: '{{ config_file }}'
+        mode: 0644
+        content: "{{ cloudwatch_config | to_json }}"
+
+    - name: Restart Cloudwatch Agent Service
+      shell: >-
+        /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl
+        -a fetch-config
+        -m ec2
+        -s
+        -c "file:{{ config_file }}"

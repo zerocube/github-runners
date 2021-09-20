@@ -1,0 +1,58 @@
+---
+- name: Check for running workers, and apply scale-in protection as needed
+  hosts:
+    - localhost
+  vars:
+    # Required vars:
+    # - asg_name
+    pgrep_pattern: Runner.Worker
+    protected_heartbeat_file: /tmp/scale-in-protected
+    unprotected_heartbeat_file: /tmp/scale-in-unprotected
+  tasks:
+
+    - name: Determine number of running workers
+      shell: 'pgrep -af "{{ pgrep_pattern }}" | grep -v sudo | grep -c . || true'
+      register: running_workers
+
+    - name: Number of running workers
+      debug: msg={{ running_workers.stdout }}
+
+    - set_fact:
+        running_worker_count: "{{ running_workers.stdout | int }}"
+
+    - name: Gather EC2 instance facts
+      amazon.aws.ec2_metadata_facts: {}
+
+    - name: Remove unprotected heartbeat file
+      when: running_worker_count | int > 0
+      file:
+        path: "{{ unprotected_heartbeat_file }}"
+        state: absent
+
+    - name: Enable instance scale-in protection
+      shell:
+        cmd: >-
+          aws autoscaling set-instance-protection \
+            --instance-ids "{{ ansible_ec2_instance_id }}" \
+            --auto-scaling-group-name "{{ asg_name }}" \
+            --protected-from-scale-in \
+          && touch "{{ protected_heartbeat_file }}"
+        creates: "{{ protected_heartbeat_file }}"
+      when: running_worker_count | int > 0
+
+    - name: Remove protected heartbeat file
+      when: running_worker_count | int == 0
+      file:
+        path: "{{ protected_heartbeat_file }}"
+        state: absent
+
+    - name: Disable instance scale-in protection
+      shell:
+        cmd: >-
+          aws autoscaling set-instance-protection \
+            --instance-ids "{{ ansible_ec2_instance_id }}" \
+            --auto-scaling-group-name "{{ asg_name }}" \
+            --no-protected-from-scale-in \
+          && touch "{{ unprotected_heartbeat_file }}"
+        creates: "{{ unprotected_heartbeat_file }}"
+      when: running_worker_count | int == 0
