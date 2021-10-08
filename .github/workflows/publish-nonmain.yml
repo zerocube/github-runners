@@ -1,0 +1,44 @@
+name: Publish NodeJS Package (non-main)
+
+on:
+  push:
+    branches-ignore: [main]
+
+jobs:
+  build_and_publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Setup .npmrc file to publish to GitHub Packages
+      - name: Configure NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          registry-url: 'https://npm.pkg.github.com'
+      
+      - name: Configure Package Version
+        run: |
+          export APPEND_STRING="$(git rev-parse --abbrev-ref HEAD)-${GITHUB_RUN_NUMBER}"
+          echo "Appending: ${APPEND_STRING}"
+          jq ".version |= . + \"-${APPEND_STRING}\"" package.json > package.json.new
+          mv package.json.new package.json
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Publish to Github Packages
+        run: |
+          npm publish \
+          --access public \
+          --tag "${GITHUB_REF}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
