@@ -20,7 +20,7 @@ export interface RunnerAMIProps {
 
 export class RunnerAMI extends cdk.Construct {
 
-  public static versionNumber: string = "0.1.11";
+  public static versionNumber: string = "0.1.12";
 
   public static runnerAppDirectory: string = "/usr/local/actions-runner"
   public static ansibleDirectory: string = "/usr/local/ansible"
