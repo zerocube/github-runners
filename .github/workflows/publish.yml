@@ -36,16 +36,16 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Configure NodeJS
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     registry-url: 'https://registry.npmjs.org'
-      #     scope: '@zerocube'
+      - name: Configure NodeJS
+        uses: actions/setup-node@v2
+        with:
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@zerocube'
       
-      # - name: Configure Package Name
-      #   run: |
-      #     jq '.name |= "@zerocube/github-runners"' package.json
+      - name: Configure Package Name
+        run: |
+          jq '.name |= "@zerocube/github-runners"' package.json
 
-      # - run: npm publish --access public
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTOMATION_TOKEN }}
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTOMATION_TOKEN }}
