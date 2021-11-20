@@ -20,7 +20,7 @@ export interface RunnerAMIProps {
 
 export default class RunnerAMI extends cdk.Construct {
 
-  public static versionNumber: string = "0.1.13";
+  public static versionNumber: string = "0.1.14";
 
   public static runnerAppDirectory: string = "/usr/local/actions-runner"
   public static ansibleDirectory: string = "/usr/local/ansible"
@@ -105,6 +105,7 @@ export default class RunnerAMI extends cdk.Construct {
       "unzip",
       "python3",
       "python3-pip",
+      "docker-compose",
     ].join(" ");
     const snapPackages: string = [
       "jq"
