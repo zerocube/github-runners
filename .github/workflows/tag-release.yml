@@ -2,7 +2,7 @@ name: Build and Publish
 
 on:
   push:
-    branches: ["*"]
+    tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
 
 jobs:
 
@@ -21,14 +21,14 @@ jobs:
     name: CDK Tests
     runs-on: ubuntu-20.04
     container:
-      image: "node:14"
+      image: "node:16"
     steps:
       - name: 💾 Checkout code
         uses: actions/checkout@v2
       - name: 🔧 Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
           cache: npm
 
       - name: Install NPM Packages
