@@ -37,38 +37,9 @@ jobs:
       - name: 🏃🏻 Run NPM Tests
         run: npm run test
 
-  version:
-    name: Bump Version
-    needs: [metadata, test]
-    runs-on: ubuntu-20.04
-    concurrency: versioning
-    permissions:
-      contents: write
-      packages: write
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Configure git
-        run: |
-          git config user.name '${{ github.actor }}'
-          git config user.email '${{ github.actor }}@users.noreply.github.com'
-
-      - if: ${{ needs.metadata.outputs.branch_name == 'main' }}
-        name: Create NPM patch version
-        run: npm version patch
-      - if: ${{ needs.metadata.outputs.branch_name != 'main' }}
-        name: Create NPM patch version
-        run: npm version prepatch --preid "${{ needs.metadata.outputs.branch_name }}"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-
   publish_github:
     name: "Publish Github NPM Module"
-    needs: [metadata, test, version]
+    needs: [metadata, test]
     runs-on: ubuntu-20.04
     permissions:
       contents: read
