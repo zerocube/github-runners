@@ -73,7 +73,7 @@ jobs:
 
   publish_npm:
     name: "Publish Public NPM Module"
-    needs: [metadata, test, version]
+    needs: [metadata, test]
     runs-on: ubuntu-20.04
     permissions:
       contents: read
