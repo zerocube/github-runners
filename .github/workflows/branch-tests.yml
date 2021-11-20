@@ -1,0 +1,26 @@
+name: Run Tests
+
+on:
+  push:
+    branches: ["*"]
+
+jobs:
+  test:
+    name: CDK Tests
+    runs-on: ubuntu-20.04
+    container:
+      image: "node:16"
+    steps:
+      - name: 💾 Checkout code
+        uses: actions/checkout@v2
+      - name: 🔧 Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: npm
+
+      - name: Install NPM Packages
+        run: npm ci
+
+      - name: 🏃🏻 Run NPM Tests
+        run: npm run test

@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+
+jobs:
+
+  metadata:
+    name: Gather Metadata
+    runs-on: ubuntu-20.04
+    outputs:
+      tag_name: ${{ steps.extract_tag.outputs.tag_name }}
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "::set-output name=tag_name::$(echo ${GITHUB_REF#refs/tags/})"
+        id: extract_tag
+
+  test:
+    name: CDK Tests
+    runs-on: ubuntu-20.04
+    container:
+      image: "node:16"
+    steps:
+      - name: 💾 Checkout code
+        uses: actions/checkout@v2
+      - name: 🔧 Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: npm
+
+      - name: Install NPM Packages
+        run: npm ci
+
+      - name: 🏃🏻 Run NPM Tests
+        run: npm run test
+
+  publish_github:
+    name: "Publish Github NPM Module"
+    needs: [metadata, test]
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.metadata.outputs.tag_name }}
+
+      # Setup .npmrc file to publish to GitHub Packages
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@zerocube'
+
+      - run: |
+          npm ci
+          npm run build
+
+      # Push to GitHub Packages
+      - run: npm publish --access public --tag latest
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish_npm:
+    name: "Publish Public NPM Module"
+    needs: [metadata, test]
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.metadata.outputs.branch_name }}
+
+      # Push to NPM registry
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@zerocube'
+
+      - run: |
+          npm ci
+          npm run build
+
+      # Push to GitHub Packages
+      - run: npm publish --access public --tag latest
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTOMATION_TOKEN }}
