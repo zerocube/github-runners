@@ -8,7 +8,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build-runner-cleaner-lambda": "cd lib/runner-cleaner/lambda && npm ci && npm run build",
+    "build-runner-cleaner-lambda": "cd lib/runner-cleaner/lambda/runner-cleaner && npm ci",
     "build": "npm run build-runner-cleaner-lambda && tsc",
     "watch": "tsc -w",
     "test": "jest"
