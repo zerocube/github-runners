@@ -17,7 +17,7 @@ npm install --save @zerocube/github-runners
 For example, if you only want to import the RunnerAMI:
 
 ```js
-import RunnerAMI from '@zerocube/github-runners/lib/runner-ami';
+import { RunnerAMI } from '@zerocube/github-runners/lib/runner-ami';
 
 const runnerAMI = new RunnerAMI(this, "RunnerAMI", {
   asgName: "my-asg-name",
