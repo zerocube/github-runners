@@ -1,5 +1,5 @@
 import * as cdk from '@aws-cdk/core';
-import { SecurityGroup, UserData } from '@aws-cdk/aws-ec2';
+import { EbsDeviceVolumeType, SecurityGroup, UserData } from '@aws-cdk/aws-ec2';
 import { CfnInstanceProfile, ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 import {
   CfnComponent,
@@ -13,6 +13,7 @@ import path = require('path');
 
 export interface RunnerAMIProps {
   asgName: string
+  volumeSize?: number
   securityGroups?: SecurityGroup[]
   additionalComponentARNs?: string[]
   tags?: { [key: string]: string }
@@ -235,6 +236,13 @@ export class RunnerAMI extends cdk.Construct {
       parentImage:
         `arn:${stack.partition}:imagebuilder:${stack.region}:aws:image/ubuntu-server-20-lts-x86/2021.2.24`,
       components: imageComponents,
+      blockDeviceMappings: [{
+        deviceName: "/dev/xvda",
+        ebs: {
+          volumeSize: props.volumeSize || 10,
+          volumeType: EbsDeviceVolumeType.GP3,
+        }
+      }],
       version: RunnerAMI.versionNumber,
     });
 
