@@ -12,7 +12,7 @@ This library provides some CDK constructs to help get up and running with Github
 npm install --save @zerocube/github-runners
 ```
 
-### Using sub-libraries
+### Using specific component libraries
 
 For example, if you only want to import the RunnerAMI:
 
@@ -26,6 +26,8 @@ const runnerAMI = new RunnerAMI(this, "RunnerAMI", {
   },
 })
 ```
+
+Documentation for each component can be found in the respective directory, e.g. `lib/runner-ami`.
 
 ## Useful commands
 
