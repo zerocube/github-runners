@@ -1,5 +1,5 @@
 import * as cdk from '@aws-cdk/core';
-import RunnerAMI from './runner-ami';
+import { RunnerAMI } from './runner-ami';
 
 export interface GithubRunnersProps {
   asgName: string // The name of the ASG to create

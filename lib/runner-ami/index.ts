@@ -18,7 +18,7 @@ export interface RunnerAMIProps {
   tags?: { [key: string]: string }
 }
 
-export default class RunnerAMI extends cdk.Construct {
+export class RunnerAMI extends cdk.Construct {
 
   public static versionNumber: string = "0.1.15";
 
