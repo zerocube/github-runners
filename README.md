@@ -29,6 +29,10 @@ const runnerAMI = new RunnerAMI(this, "RunnerAMI", {
 
 Documentation for each component can be found in the respective directory, e.g. `lib/runner-ami`.
 
+## Other useful components
+
+You may also want to use [AMI Sweeper](https://github.com/zerocube/ami-sweeper) to clean up old AMIs from RunnerAMI's EC2 Image Builder component.
+
 ## Useful commands
 
  * `npm run build`   compile typescript to js
