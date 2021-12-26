@@ -8,7 +8,7 @@ jobs:
 
   publish_github:
     name: "Publish Github NPM Module"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -36,7 +36,7 @@ jobs:
 
   publish_npm:
     name: "Publish Public NPM Module"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write

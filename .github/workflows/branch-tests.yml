@@ -7,7 +7,7 @@ on:
 jobs:
   test:
     name: CDK Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     container:
       image: "node:16"
     steps:
