@@ -7,8 +7,8 @@ import { RunnerAMI } from '../lib/runner-ami';
  * Example test
  */
 test('No SNS Topic Created', () => {
-  var app = new cdk.App();
-  var stack = new cdk.Stack(app, "TestStack");
+  const app = new cdk.App();
+  const stack = new cdk.Stack(app, "TestStack");
   // WHEN
   new GithubRunners(stack, 'MyTestConstruct', {
     asgName: "github-runners-test",
@@ -18,12 +18,13 @@ test('No SNS Topic Created', () => {
 });
 
 test('Runner AMI Created', () => {
-  var app = new cdk.App();
-  var stack = new cdk.Stack(app, "TestAMIStack");
+  const app = new cdk.App();
+  const stack = new cdk.Stack(app, "TestAMIStack");
   // WHEN
   new RunnerAMI(stack, "RunnerAMI", {
     asgName: "some-asg-name",
   })
+
   // THEN
   expectCDK(stack).to(haveResource("AWS::ImageBuilder::InfrastructureConfiguration"));
   expectCDK(stack).to(haveResource("AWS::ImageBuilder::DistributionConfiguration"));
