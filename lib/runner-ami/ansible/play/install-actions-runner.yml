@@ -5,7 +5,7 @@
   vars:
     # Required vars:
     # - runner_app_directory
-    runner_version: '2.287.1'
+    runner_version: '2.289.2'
     actions_package_url: "https://github.com/actions/runner/releases/download\
       /v{{ runner_version }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
     tmp_dest: /tmp/actions.tar.gz
